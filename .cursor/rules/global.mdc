@@ -1,0 +1,40 @@
+---
+description: "Global architectural map and universal rules for the Canine Adoption Platform monorepo."
+alwaysApply: true
+---
+
+# Monorepo Architecture & Navigation
+
+We are working in a monorepo with strict separation of concerns. Always respect the boundaries between the frontend, backend, and infrastructure.
+
+## Project Structure
+
+1. **frontend/**
+    * **Stack:** Next.js (App Router), TypeScript, Tailwind CSS, Shadcn/UI.
+    * **Role:** Public-facing interface for browsing dogs and the admin dashboard.
+    * **Rule:** Must use openapi-fetch for all backend API calls to maintain end-to-end type safety.
+
+2. backend/
+
+    * **Stack:** Python, FastAPI, SQLAlchemy (Async), PostgreSQL.
+    * **Role:** REST API, database interactions, authentication (fastapi-users), and Mistral LLM integration.
+    * **Rule:** All database operations and API routes must be fully asynchronous (async def).
+
+3. infrastructure/
+
+    * Stack: Docker Compose, OpenShift Kubernetes manifests.
+    * Role: Local development orchestration and staging deployment configurations.
+
+## Universal Workflow & Commands
+Do not guess terminal commands. Always use the provided root-level Makefile to orchestrate the environment:
+
+* `make up`: Spin up the entire stack via Docker Compose.
+* `make migrate`: Execute database schema migrations.
+* `make seed-db`: Populate the database with mock canine data.
+* `make test`: Run isolated frontend (Jest) and backend (Pytest) test suites.
+`make lint`: Execute code formatting and linting.
+
+## Development Methodology
+* **TDD First**: Write tests before implementing new features. Automatically run tests after modifying code to catch regressions.
+
+* **Agent Delegation**: Recognize when a task requires specialized focus (e.g., complex React state vs. deep SQLAlchemy logic) and utilize specific subagents or nested AGENTS.md instructions when necessary.
