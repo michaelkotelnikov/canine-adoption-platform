@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: canine-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: canine-frontend
+  template:
+    metadata:
+      labels:
+        app: canine-frontend
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+      containers:
+        - name: web
+          image: image-registry.openshift-image-registry.svc:5000/your-project/canine-frontend:latest
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: PORT
+              value: "3000"
+            - name: NEXT_PUBLIC_API_URL
+              value: "https://your-backend-route.example.com"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: canine-frontend
+spec:
+  selector:
+    app: canine-frontend
+  ports:
+    - port: 3000
+      targetPort: 3000
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: canine-frontend
+spec:
+  to:
+    kind: Service
+    name: canine-frontend
+  port:
+    targetPort: 3000
+  tls:
+    termination: edge

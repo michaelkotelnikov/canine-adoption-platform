@@ -1,0 +1,63 @@
+# From repo root: docker compose -f infrastructure/docker-compose.yml up
+# Copy .env.example to .env first (optional; defaults below match).
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-canine}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-canine}
+      POSTGRES_DB: ${POSTGRES_DB:-canine}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-canine} -d ${POSTGRES_DB:-canine}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      target: development
+    # Repo-root .env is not auto-loaded for ${VAR} interpolation (project dir is infrastructure/).
+    env_file:
+      - ../.env
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://canine:canine@postgres:5432/canine}
+      JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_change_me}
+      # Do not set MISTRAL_API_KEY here: empty compose interpolation would override env_file.
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+    volumes:
+      - ../backend:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - "3000:3000"
+    environment:
+      # Browser → host-mapped API; RSC fetch inside the container → Compose DNS
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      API_URL: ${API_URL:-http://backend:8000}
+      # Dev entrypoint runs `npm run dev` as this UID (setpriv); default matches common local UBI defaults
+      CONTAINER_RUN_UID: ${CONTAINER_RUN_UID:-1001}
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

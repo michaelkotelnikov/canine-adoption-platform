@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* design-system.json — warm shelter palette (HSL components for shadcn / Tailwind) */
+@layer base {
+  :root {
+    --canvas: 40 26% 95%;
+    --canvas-alt: 25 40% 97%;
+    --brand: 22 86% 44%;
+    --brand-alt: 20 88% 46%;
+    --text-body: 24 11% 22%;
+    --text-secondary: 24 9% 32%;
+    --text-muted: 30 6% 52%;
+    --decorative: 30 22% 88%;
+    --social-well: 30 14% 84%;
+    --glass: 0 0% 100%;
+
+    --background: var(--canvas);
+    --foreground: var(--text-body);
+    --card: 40 35% 99%;
+    --card-foreground: var(--text-body);
+    --popover: 0 0% 100%;
+    --popover-foreground: var(--text-body);
+    --primary: var(--brand);
+    --primary-foreground: 0 0% 100%;
+    --secondary: 35 25% 92%;
+    --secondary-foreground: var(--text-body);
+    --muted: 35 20% 92%;
+    --muted-foreground: var(--text-secondary);
+    --accent: 35 25% 92%;
+    --accent-foreground: var(--text-body);
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 32 18% 88%;
+    --input: 32 18% 88%;
+    --ring: var(--brand);
+    --radius: 1.25rem;
+    --chart-1: var(--brand);
+    --chart-2: 24 9% 32%;
+    --chart-3: 30 22% 88%;
+    --chart-4: 35 20% 92%;
+    --chart-5: 22 86% 44%;
+    --sidebar: 40 35% 98%;
+    --sidebar-foreground: var(--text-body);
+    --sidebar-primary: var(--brand);
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 35 25% 92%;
+    --sidebar-accent-foreground: var(--text-body);
+    --sidebar-border: 32 18% 88%;
+    --sidebar-ring: var(--brand);
+    --shelter-shadow: 22 86% 44%;
+  }
+
+  .dark {
+    --canvas: 24 12% 14%;
+    --canvas-alt: 24 10% 12%;
+    --text-body: 40 20% 94%;
+    --text-secondary: 35 12% 72%;
+    --text-muted: 30 8% 55%;
+    --decorative: 24 10% 22%;
+    --social-well: 24 8% 26%;
+    --background: var(--canvas);
+    --foreground: var(--text-body);
+    --card: 24 11% 18%;
+    --card-foreground: var(--text-body);
+    --popover: 24 11% 18%;
+    --popover-foreground: var(--text-body);
+    --primary: 22 75% 52%;
+    --primary-foreground: 24 12% 12%;
+    --secondary: 24 10% 22%;
+    --secondary-foreground: var(--text-body);
+    --muted: 24 10% 22%;
+    --muted-foreground: var(--text-secondary);
+    --accent: 24 10% 22%;
+    --accent-foreground: var(--text-body);
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 24 8% 26%;
+    --input: 24 8% 26%;
+    --ring: 22 75% 52%;
+    --sidebar: 24 11% 16%;
+    --sidebar-foreground: var(--text-body);
+    --sidebar-primary: 22 75% 52%;
+    --sidebar-primary-foreground: 24 12% 12%;
+    --sidebar-accent: 24 10% 22%;
+    --sidebar-accent-foreground: var(--text-body);
+    --sidebar-border: 24 8% 26%;
+    --sidebar-ring: 22 75% 52%;
+    --shelter-shadow: 22 75% 40%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}

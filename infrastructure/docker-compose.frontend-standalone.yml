@@ -1,0 +1,26 @@
+# Frontend-only stack for UI / layout testing (no Postgres, no FastAPI).
+# From repo root:
+#   make up-frontend-standalone
+# Or:
+#   docker compose -f infrastructure/docker-compose.frontend-standalone.yml up --build
+#
+# Open http://localhost:3000 — uses bundled mock dogs; auth / admin / AI are disabled.
+
+name: canine-frontend-standalone
+
+services:
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - "${FRONTEND_STANDALONE_PORT:-3000}:3000"
+    environment:
+      NEXT_PUBLIC_STANDALONE: "1"
+      # Unused for dog pages in standalone mode; avoids accidental calls to a real API.
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://127.0.0.1:1}
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+      - /app/.next

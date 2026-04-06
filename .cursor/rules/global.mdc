@@ -32,7 +32,7 @@ Do not guess terminal commands. Always use the provided root-level Makefile to o
 * `make migrate`: Execute database schema migrations.
 * `make seed-db`: Populate the database with mock canine data.
 * `make test`: Run isolated frontend (Jest) and backend (Pytest) test suites.
-`make lint`: Execute code formatting and linting.
+* `make lint`: Execute code formatting and linting.
 
 ## Development Methodology
 * **TDD First**: Write tests before implementing new features. Automatically run tests after modifying code to catch regressions.

@@ -1,0 +1,267 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "meta": {
+    "name": "Dog Shelter design system",
+    "version": "1.0.0",
+    "source": "Reference landing and dog profile mockups (warm shelter brand: DOG SHELTER)",
+    "referenceAssets": [
+      ".cursor/projects/home-mkotelni-Documents-canine-adoption-platform/assets/Screenshot_From_2026-04-06_13-21-58-aefed7e8-07e8-4fc1-88cb-fc90852a9059.png",
+      ".cursor/projects/home-mkotelni-Documents-canine-adoption-platform/assets/Screenshot_From_2026-04-06_13-21-43-a68a1459-b08f-4765-be35-3aeb09644204.png",
+      ".cursor/projects/home-mkotelni-Documents-canine-adoption-platform/assets/Screenshot_From_2026-04-06_14-08-04-c359e55c-3c37-4232-b204-fed6c61eca7d.png",
+      ".cursor/projects/home-mkotelni-Documents-canine-adoption-platform/assets/Screenshot_From_2026-04-06_14-19-11-28ac8d39-7930-4ec7-912a-6fcfaafbfd3b.png",
+      ".cursor/projects/home-mkotelni-Documents-canine-adoption-platform/assets/Screenshot_From_2026-04-06_15-06-10-27165826-8d5d-4f78-bb77-2dcc5bf0fa53.png"
+    ],
+    "intent": "High-level tokens and component guidelines for structure, spacing, typography, color, and interaction—use with Tailwind/CSS variables or design tools."
+  },
+  "brand": {
+    "voice": ["Welcoming", "Compassionate", "Modern", "Trustworthy", "Playful without being childish"],
+    "visualPillars": [
+      "Organic rounded geometry (circles, ovals, pills, arches)—soft, friendly silhouette language",
+      "Generous whitespace; centered hero hierarchy; four-corner anchoring for chrome (logo, nav, contact, social)",
+      "Warm cream base + burnt-orange accent for emphasis and CTAs",
+      "Photography-forward: cut-out or contained pet imagery as focal hero elements",
+      "High contrast between accent orange and light backgrounds for accessibility of key actions",
+      "Editorial left rail (metadata + secondary cards) paired with a photographic hero on detail pages",
+      "Canonical marketing dog profile: centered arch card as focal point, mirrored metadata columns, generous negative space, glass overlay and soft elevation"
+    ]
+  },
+  "color": {
+    "palette": {
+      "background": {
+        "canvas": { "hex": "#F5F2EE", "usage": "Primary page background (landing)" },
+        "canvasAlt": { "hex": "#F9F4F0", "usage": "Slightly warmer alt (profile / interior pages)" }
+      },
+      "brand": {
+        "primary": { "hex": "#D2570F", "usage": "Headings, logo wordmark, primary CTAs, key values, icons" },
+        "primaryAlt": { "hex": "#D95D0F", "usage": "Acceptable variant in same family for hover or large fills" }
+      },
+      "neutral": {
+        "secondaryText": { "hex": "#5C534A", "usage": "Labels, secondary nav, supporting copy (warm grey-brown)" },
+        "body": { "hex": "#3D3833", "usage": "Body and description text on light backgrounds" },
+        "muted": { "hex": "#8A8278", "usage": "De-emphasized UI chrome" }
+      },
+      "surface": {
+        "decorative": { "hex": "#E8DDD3", "usage": "Large decorative shapes (paw pads, ovals behind photos)" },
+        "socialIcon": { "hex": "#D9D0C8", "usage": "Circular social / icon wells (light grey-tan)" },
+        "glass": { "hex": "#FFFFFF", "usage": "Frosted cards: use at ~70–85% opacity with blur" }
+      },
+      "onPrimary": { "hex": "#FFFFFF", "usage": "Text and icons on orange buttons and filled circles" }
+    },
+    "semantic": {
+      "text": {
+        "headingAccent": "brand.primary",
+        "headingNeutral": "neutral.body",
+        "label": "neutral.secondaryText",
+        "body": "neutral.body",
+        "inverse": "onPrimary"
+      },
+      "interactive": {
+        "primaryDefault": "brand.primary",
+        "primaryHover": "brand.primaryAlt (slightly brighter or darker step—~5–8%)",
+        "primaryShadow": "Diffuse orange glow (same hue, low saturation, large blur)"
+      }
+    }
+  },
+  "typography": {
+    "families": {
+      "display": {
+        "role": "Hero titles, major headings, logo-adjacent emphasis",
+        "character": "Rounded geometric sans; friendly, soft terminals",
+        "suggestedGoogleFonts": ["Comfortaa", "Varela Round", "Quicksand", "Fredoka"]
+      },
+      "ui": {
+        "role": "Navigation, labels, buttons, metadata",
+        "character": "Clean geometric sans; strong legibility at small sizes",
+        "suggestedGoogleFonts": ["Montserrat", "Inter", "DM Sans"]
+      }
+    },
+    "scale": {
+      "heroTitle": { "approxRem": "2.5–3.5", "weight": "700", "color": "brand.primary" },
+      "pageTitle": { "approxRem": "2–2.75", "weight": "700", "color": "brand.primary" },
+      "subtitle": { "approxRem": "1–1.125", "weight": "500", "color": "neutral.secondaryText or neutral.body" },
+      "navPrimary": { "approxRem": "1.125–1.25", "weight": "700", "color": "brand.primary" },
+      "navLabel": { "approxRem": "0.65–0.75", "weight": "600", "letterSpacing": "0.12–0.2em", "textTransform": "uppercase", "color": "neutral.secondaryText" },
+      "dataLabel": { "approxRem": "0.65–0.75", "weight": "600", "letterSpacing": "0.1–0.18em", "textTransform": "uppercase", "color": "neutral.body" },
+      "dataValue": { "approxRem": "1–1.125", "weight": "600", "color": "brand.primary" },
+      "dogNameArch": { "approxRem": "2.25–3.25", "weight": "700", "font": "display", "color": "brand.primary", "alignment": "center above or integrated with arch hero on marketing dog profile mockups" },
+      "body": { "approxRem": "0.875–1", "weight": "400", "lineHeight": "1.5–1.65", "color": "neutral.body" },
+      "button": { "approxRem": "0.9375–1.0625", "weight": "600", "color": "onPrimary on filled buttons" },
+      "logoWordmark": { "textTransform": "uppercase", "weight": "700", "color": "brand.primary", "layout": "Stacked or compact lockup beside circular mark" }
+    },
+    "rules": [
+      "Pair display font for emotional headlines with ui font for structure and density.",
+      "Uppercase labels are always small-caps scale with increased letter-spacing; never use all-caps for long paragraphs.",
+      "Orange is for emphasis—headlines that sell emotion, CTAs, and key facts; body copy stays dark neutral."
+    ]
+  },
+  "spacing": {
+    "scale": {
+      "xs": "0.25rem",
+      "sm": "0.5rem",
+      "md": "1rem",
+      "lg": "1.5rem",
+      "xl": "2rem",
+      "2xl": "3rem",
+      "3xl": "4rem",
+      "section": "4–6rem vertical between major regions on marketing pages"
+    },
+    "layout": {
+      "maxContentWidth": "72–80rem for main grid; hero may be full-bleed with internal max-width",
+      "pagePadding": "1.5–2rem horizontal on mobile; 2–3rem on desktop",
+      "grid": {
+        "profileThreeColumn": "Canonical marketing layout (15-06-10 reference): equal outer columns ~min 10–14rem flanking a flexible center arch card; left metadata + right metadata mirror. Also usable as legacy alternate beside app-specific rail layouts.",
+        "dogDetailDesktop": "At lg+ (~1024px): two columns—narrow left rail (minmax ~14–22rem) and flexible center. Left rail: all dog metadata fields in one vertical stack (left-aligned), then the AI overview card (same rail width, min-w-0 for streamed text). Center column: arch hero + glass adopt panel only—no overview beside the photo. Use one horizontal gap token (e.g. 2rem) between rail and hero.",
+        "dogDetailMobile": "Below lg: hero FIRST (order-1 via CSS), then metadata in a compact 2-col grid (sm: 3-col), then overview card, then chat. The dog photo is the emotional hook — never bury it below metadata on small screens. A display-weight dog-name heading appears above the hero on mobile (hidden on lg where the name is in the rail).",
+        "dogDetailBelowHero": "No separate Prev/Next text strip above chat. Full-width AI chat card directly under the two-column band.",
+        "cornerAnchors": "Logo top-left, primary nav top-right, contact block bottom-left, social or pagination bottom-right"
+      },
+      "alignment": {
+        "symmetry": [
+          "Single left rail: consistent vertical gap between metadata fields and between the last field and the AI overview card; all left-aligned.",
+          "Top-align the first metadata row with the top of the arch hero where possible (avoid asymmetric top padding on the rail vs hero).",
+          "AI overview card shares corner radius, border weight, and shadow language with other cards; rail uses min-width 0 so long streamed text wraps.",
+          "Hero sequence chevrons (dogHeroSequenceNav) are optically symmetric: same control size, mirrored inset from the left/right edges of the photo mask, at ~45% from top. Decorative FABs sit higher at ~15% near the arch curve. This separation avoids visual collision. Chevrons use frosted white/translucent fill; FABs use filled primary. z-index: both above image, chevrons actionable (pointer-events-auto), FABs decorative (pointer-events-none)."
+        ],
+        "rhythm": [
+          "Use one vertical spacing step between the two-column band and the full-width chat (e.g. 2rem) so the page reads as rail+hero then conversation.",
+          "Card headers: consistent horizontal padding and title size across AI overview and Ask about {dog}."
+        ]
+      },
+      "principles": [
+        "Prioritize breathing room around hero and CTAs; avoid crowding the paw/arch focal shapes.",
+        "Align label/value stacks vertically with consistent gap (e.g. 0.25–0.5rem between label and value).",
+        "Use vertical rhythm: section gaps are multiples of base spacing unit.",
+        "On dog detail at lg+, treat left rail + hero as the primary band; chat is full-width and visually secondary below."
+      ]
+    }
+  },
+  "shape": {
+    "radius": {
+      "pill": "9999px (full) for primary CTAs and circular icon buttons",
+      "button": "1.5–2rem (large pill if not full)",
+      "card": "1.25–2.5rem on rectangular surfaces",
+      "archTop": "50% width as radius or explicit large border-top radii for profile hero cards",
+      "circle": "50% for logo icon container, social wells, floating FABs"
+    },
+    "principles": [
+      "Default to soft corners everywhere; sharp rectangles are the exception.",
+      "Decorative blobs (paw pads, ovals) are organic—not perfect circles except for small UI controls."
+    ]
+  },
+  "elevation": {
+    "shadows": {
+      "cta": "Soft diffuse shadow under primary buttons; hue-shifted toward brand orange, large blur, low opacity",
+      "floatingFab": "Similar soft shadow on circular orange actions overlapping hero imagery",
+      "card": "Very subtle neutral shadow optional; prefer separation via surface color and spacing"
+    },
+    "glassmorphism": {
+      "usage": "Description panels overlapping imagery on profile view",
+      "recipe": "Semi-transparent white or warm cream (roughly 70–85% opacity), backdrop blur (8–16px), light border or hairline optional, inner padding generous",
+      "dogProfileOverlay": "On the reference dog card, body copy in the glass panel may be centered for a calm, editorial feel; CTA remains the dominant interactive element below or within the overlay"
+    }
+  },
+  "components": {
+    "siteHeader": {
+      "structure": "Flex row: logo lockup left, navigation cluster right",
+      "logo": "Orange circle with white dog silhouette + stacked DOG SHELTER wordmark in brand orange",
+      "nav": "Two-tier: small uppercase grey label above larger orange bold link (e.g. ABOUT US / WHO WE ARE)",
+      "behavior": "Minimal chrome; text-only links without heavy underlines; hover may lighten orange or add subtle underline"
+    },
+    "heroLanding": {
+      "structure": "Centered composition; large decorative paw made of beige ovals with embedded puppy photography; main pad holds headline + subtitle + CTA",
+      "imagery": "Cut-out or masked photos inside oval cells; consistent lighting and warm tone preferred",
+      "typography": "Display font headline + ui subtitle",
+      "ctaPlacement": "Below hero copy, centered on pad"
+    },
+    "buttonPrimary": {
+      "shape": "Pill",
+      "background": "brand.primary",
+      "text": "White; semibold",
+      "trailingAffordance": "Optional small circular inset with arrow icon (slightly darker orange fill)",
+      "padding": "Generous horizontal (1.5–2.5rem) and vertical (0.75–1rem)",
+      "minHeight": "~2.75–3.25rem touch-friendly"
+    },
+    "buttonSecondary": {
+      "shape": "Rounded rectangle or pill",
+      "background": "Light cream or neutral surface",
+      "text": "dark neutral",
+      "usage": "PREV / secondary navigation; de-emphasized vs NEXT"
+    },
+    "buttonPagination": {
+      "next": "Filled orange pill, white label",
+      "prev": "Light cream fill, dark text—paired sizing with NEXT",
+      "note": "On dog detail, prefer dogHeroSequenceNav (icon chevrons on the arch photo) instead of text Prev/Next pills; keep pill pattern for other flows (e.g. landing footer) if needed."
+    },
+    "footerCluster": {
+      "contact": "Mirror nav pattern: CONTACT label (small grey uppercase) + GET IN TOUCH (orange bold)",
+      "social": "Circular wells with FB / IG monograms in orange on muted circle background",
+      "alignment": "Contact bottom-left, social bottom-right on landing; dog detail uses hero chevrons for sequence navigation, not footer pagination"
+    },
+    "dogProfileHeroCard": {
+      "reference": "High-fidelity centered dog profile (see Screenshot_From_2026-04-06_15-06-10): single-viewport desktop, warm cream canvas, premium minimal chrome.",
+      "composition": {
+        "hierarchy": "One dominant vertical profile unit in the center; metadata and page chrome frame it symmetrically. Heavy negative space around the card reads calm and high-end.",
+        "outerShell": "Large vertical profile container: light semi-transparent cream feel, very soft diffuse shadow (neutral or slight warm tint), large corner radii on any outer wrapper; arch cut at top of photo region.",
+        "profileTitle": "Dog name centered above the arch or at the crown of the composition in display font, large scale (see typography.scale.dogNameArch), brand.primary.",
+        "photoRegion": "High-quality photo centered inside the arch mask; object-cover; warm natural lighting aligns with palette.",
+        "floatingActions": "Heart (left) and paw (right) on the upper arch—white glyph on filled brand.primary circles, soft glow or shelter-class shadow so they float above the photo."
+      },
+      "metadataColumns": {
+        "marketingLayout": "Two flanking columns with equal visual weight: left stack e.g. NAME, BREED, AGE (labels small muted uppercase; values larger display-weight brand.primary). Right stack e.g. COLOR (or coat), PERSONALITY, WEIGHT (or SIZE)—mirror spacing and alignment with left column (left column flush left, right column flush right of center card).",
+        "dataModelNote": "Map product fields to this pattern where sensible (e.g. SIZE/SEX/STATUS can replace or complement personality/weight columns); preserve label-above-value rhythm and orange values.",
+        "implementationNote": "The live app may use a single left rail plus AI column for density; when aligning to this reference, reintroduce mirrored side columns or center the name on the arch for marketing parity."
+      },
+      "descriptionPanel": {
+        "structure": "Frosted glass rounded rectangle overlapping the lower third of the photo; generous padding; optional centered body text for the marketing variant.",
+        "content": "Short emotional description in neutral.body; line length comfortable (~40–60ch if left-aligned; centered lines shorter).",
+        "cta": "Primary pill 'Adopt this Puppy' (or equivalent) with trailing circular arrow affordance; high contrast; slight hover scale acceptable."
+      },
+      "pageChrome": {
+        "header": "Logo top-left; two-tier nav top-right (small grey label + large orange link), matching siteHeader.",
+        "footerBand": "Contact cluster bottom-left (CONTACT / GET IN TOUCH); bottom-right may hold PREV and NEXT as light cream pills with orange or dark text for dog sequence—alternative to in-photo chevron nav (see dogHeroSequenceNav vs buttonPagination)."
+      },
+      "singleViewport": "Target all profile-relevant content visible without vertical scroll on standard desktop height; outer margins and internal padding trade off against arch height."
+    },
+    "dogDetailAiLayout": {
+      "intent": "Large screens: AI overview sits in the left rail below all metadata; hero column is photo + glass adopt only. Chat is full-width below the rail+hero band—no text pagination strip.",
+      "breakpoints": "At lg (~1024px): grid with left rail + hero; below lg stack metadata, overview, hero, then chat.",
+      "overviewColumn": "Card titled 'AI overview' with primary 'Generate' in the left rail under metadata; left accent border (border-l-[3px] brand.primary at 30% opacity) for visual distinction from generic cards; body scrolls inside a max height; min-w-0.",
+      "chatColumn": "Separate card 'Ask about {name}'; same card radius and border as overview; conversation area inset with subtle surface tint.",
+      "sequenceNavigation": "See dogHeroSequenceNav—chevron controls on the arch image, not paginationStrip."
+    },
+    "dogHeroSequenceNav": {
+      "placement": "Flanking the arch photo mask (inside or slightly overlapping the image bounds), not below the overview card.",
+      "appearance": "Icon-only chevrons (~20px stroke-width-2); circular hit target ~44px; frosted white fill (bg-white/80, backdrop-blur-sm), hairline border (border-white/50), subtle card shadow. 200ms hover: scale-110, increased opacity, shelter-sm shadow. Both prev and next use the same glass treatment for symmetry.",
+      "behavior": "Links to previous/next dog by id; when no neighbor, control is visually disabled (reduced opacity, no navigation) with appropriate aria-disabled / non-interactive pattern.",
+      "accessibility": "aria-label 'Previous dog' / 'Next dog'; visible focus ring (ring-2 ring-primary ring-offset-2 or equivalent)."
+    },
+    "dogCardList": {
+      "note": "Not fully shown in references; extend principles: rounded image top, cream/off-white card, orange accent for name or status, generous padding, soft shadow optional"
+    },
+    "formElements": {
+      "note": "Not shown; align inputs with ui font, rounded-md to rounded-xl borders, focus ring in brand primary"
+    },
+    "icons": {
+      "style": "Simple white glyphs on orange circles for primary actions; social as letter monograms in circle wells",
+      "stroke": "Prefer filled shapes or bold strokes readable at small sizes"
+    }
+  },
+  "motion": {
+    "principles": [
+      "Subtle, reassuring transitions (150–250ms) on hover/focus for buttons and links",
+      "Optional gentle scale (1.02) on primary CTA hover—avoid aggressive bounce"
+    ]
+  },
+  "accessibility": {
+    "contrast": [
+      "Verify WCAG AA for orange text on cream (large headings may pass; small text may need darker orange or brown)",
+      "Ensure focus states are visible (ring or outline) on all interactive components"
+    ],
+    "touchTargets": "Minimum ~44px for circular FABs and primary buttons"
+  },
+  "implementationNotes": {
+    "tailwind": "Map palette to CSS variables in :root and reference in tailwind.config theme.extend.colors",
+    "nextImage": "Remote dog photos allowed from configured hosts; prefer consistent aspect ratios inside oval/arch masks",
+    "darkMode": "Reference designs are light-first; if added, invert to deep warm grey background and desaturate orange slightly for legibility"
+  }
+}
