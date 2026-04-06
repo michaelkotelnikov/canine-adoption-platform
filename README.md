@@ -131,10 +131,6 @@ make lint
 
 Backend tests use an in-memory SQLite database via dependency overrides; production uses PostgreSQL only.
 
-## Troubleshooting
-
-**Frontend container: `EACCES` on `/app/.next`:** The dev image runs an entrypoint from **`/usr/local/bin`** (not under `/app`) so the `../frontend:/app` bind mount cannot replace it. Rebuild after Dockerfile changes: `docker compose -f infrastructure/docker-compose.yml build --no-cache frontend`. The entrypoint `chown`s the anonymous `node_modules` / `.next` volumes for **`CONTAINER_RUN_UID`** (default **1001**), then runs **`npm run dev`** via **`setpriv`** (no `/etc/passwd` entry required). Override with **`CONTAINER_RUN_UID`** in Compose if you adopt **`user: "${UID}:0"`** (keep the image entrypoint as root so `chown` still works).
-
 ## OpenShift
 
 See [infrastructure/openshift/README.md](infrastructure/openshift/README.md) for sample Deployment/Service/Route manifests (non-root, arbitrary UID / **restricted** SCC–friendly, UBI-based images).
