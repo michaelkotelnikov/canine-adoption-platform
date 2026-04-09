@@ -34,8 +34,12 @@ spec:
               value: production
             - name: PORT
               value: "3000"
-            - name: NEXT_PUBLIC_API_URL
+            # Public HTTPS URL of the API (browser + optional SSR). Read at runtime — not baked into the image.
+            - name: PUBLIC_API_URL
               value: "https://your-backend-route.example.com"
+            # Optional: in-cluster URL for server-side fetches (faster than going out via the Route).
+            # - name: API_URL
+            #   value: "http://canine-backend:8000"
           readinessProbe:
             httpGet:
               path: /

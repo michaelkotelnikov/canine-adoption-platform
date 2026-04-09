@@ -4,6 +4,7 @@ import { DM_Sans, Quicksand } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/features/auth/auth-context";
 import { StandaloneBanner } from "@/features/layout/standalone-banner";
+import { PublicApiRuntimeScript } from "@/features/runtime/public-api-runtime-script";
 
 import "./globals.css";
 
@@ -34,6 +35,7 @@ export default function RootLayout({
       <body
         className={`${fontSans.variable} ${fontDisplay.variable} min-h-screen font-sans antialiased`}
       >
+        <PublicApiRuntimeScript />
         <AuthProvider>
           <StandaloneBanner />
           {children}

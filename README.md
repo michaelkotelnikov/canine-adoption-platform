@@ -220,13 +220,13 @@ If you omit AI features, you can leave `mistral-api-key` empty; the sample Deplo
 1. In [`infrastructure/openshift/backend-deployment.yaml`](infrastructure/openshift/backend-deployment.yaml), set the `image` to your GHCR backend image (see [Application images on GHCR](#4-application-images-on-ghcr)).
 2. Set **`CORS_ORIGINS`** to the **public HTTPS origin** of the frontend Route (you can update this after you create the frontend Route in the next steps).
 3. In [`infrastructure/openshift/frontend-deployment.yaml`](infrastructure/openshift/frontend-deployment.yaml), set the `image` to your GHCR frontend image.
-4. Set **`NEXT_PUBLIC_API_URL`** to the **public HTTPS base URL** of the API (browser-accessible), e.g. `https://canine-backend-canine-demo.apps.example.com` — no trailing slash.
+4. Set **`PUBLIC_API_URL`** to the **public HTTPS base URL** of the API (browser-accessible), e.g. `https://canine-backend-canine-demo.apps.example.com` — no trailing slash. This is read **at runtime** on the Next.js server (injected for the browser via a small inline script in the layout), so you do **not** need to rebuild the frontend image when the API Route URL changes. `NEXT_PUBLIC_API_URL` is still supported as a fallback for local dev.
 
-Optional: for Next.js server-side requests, add an env var **`API_URL`** pointing at the in-cluster Service (e.g. `http://canine-backend:8000`) so RSC traffic does not leave the cluster; if unset, the app falls back to `NEXT_PUBLIC_API_URL` (see [`frontend/src/lib/api/client.ts`](frontend/src/lib/api/client.ts)).
+Optional: for Next.js server-side requests, add an env var **`API_URL`** pointing at the in-cluster Service (e.g. `http://canine-backend:8000`) so RSC traffic does not leave the cluster; if unset, the app falls back to `PUBLIC_API_URL` or `NEXT_PUBLIC_API_URL` (see [`frontend/src/lib/api/client.ts`](frontend/src/lib/api/client.ts)).
 
 ### 7. Apply workloads and expose the API
 
-The repository sample includes a Route for the **frontend** only. Expose the **backend** Service so browsers and `NEXT_PUBLIC_API_URL` can reach it.
+The repository sample includes a Route for the **frontend** only. Expose the **backend** Service so browsers and `PUBLIC_API_URL` can reach it.
 
 ```bash
 oc apply -f infrastructure/openshift/backend-deployment.yaml
@@ -241,7 +241,7 @@ oc get route canine-frontend -o jsonpath='{.spec.host}{"\n"}'
 oc get route canine-backend -o jsonpath='{.spec.host}{"\n"}'
 ```
 
-If `CORS_ORIGINS` or `NEXT_PUBLIC_API_URL` were placeholders, edit the Deployments (or patch env) so **`CORS_ORIGINS`** matches `https://<frontend-route-host>` and **`NEXT_PUBLIC_API_URL`** matches `https://<backend-route-host>`, then wait for a rollout.
+If `CORS_ORIGINS` or `PUBLIC_API_URL` were placeholders, edit the Deployments (or patch env) so **`CORS_ORIGINS`** matches `https://<frontend-route-host>` and **`PUBLIC_API_URL`** matches `https://<backend-route-host>`, then wait for a rollout.
 
 ### 8. Database migrations and seed data
 

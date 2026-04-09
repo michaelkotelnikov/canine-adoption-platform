@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { DogCard } from "@/features/dogs/dog-card";
-import { createServerApiClient } from "@/lib/api/client";
+import { createServerApiClient, getServerApiBaseUrl } from "@/lib/api/client";
 import { MOCK_DOGS } from "@/lib/mock-dogs";
 import { isStandaloneFrontend } from "@/lib/standalone";
 
@@ -99,7 +99,7 @@ export default async function HomePage() {
           <p className="mt-2 text-sm text-text-secondary">
             Expected base URL:{" "}
             <code className="rounded-md bg-muted px-1.5 py-0.5 text-xs text-text-body">
-              {process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"}
+              {getServerApiBaseUrl()}
             </code>
           </p>
         </div>
