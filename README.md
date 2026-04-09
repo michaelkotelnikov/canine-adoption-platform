@@ -1,6 +1,6 @@
 # Canine Adoption Platform
 
-Monorepo for a public dog-browsing site with **FastAPI** + **PostgreSQL**, **Next.js (App Router)**, and optional **Mistral** LLM features (streaming overview + chat). Local orchestration uses **Docker Compose**; production-oriented images use **Red Hat UBI** and are laid out for an **arbitrary non-root UID** with **supplemental GID 0** (OpenShift-style: **`chgrp 0` + `chmod -R g=u`** on `/app`). Local `docker run` can use e.g. **`--user 10042:0`**.
+Monorepo for a public dog-browsing site with **FastAPI** + **PostgreSQL**, **Next.js (App Router)**, and **Mistral** LLM features (streaming overview + chat).
 
 ## Prerequisites
 
@@ -131,6 +131,144 @@ make lint
 
 Backend tests use an in-memory SQLite database via dependency overrides; production uses PostgreSQL only.
 
-## OpenShift
+## OpenShift (demo deployment)
 
-See [infrastructure/openshift/README.md](infrastructure/openshift/README.md) for sample Deployment/Service/Route manifests (non-root, arbitrary UID / **restricted** SCC–friendly, UBI-based images).
+These steps walk through a **demo-only** deployment: one namespace, sample PostgreSQL, and the manifests under [`infrastructure/openshift/`](infrastructure/openshift/). Application images are **not** built or mirrored into the OpenShift integrated registry here: they are **published to GitHub Container Registry (GHCR)** by CI. For security and SCC notes on the sample manifests, see [infrastructure/openshift/README.md](infrastructure/openshift/README.md).
+
+### Prerequisites
+
+- [OpenShift CLI](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/cli_tools/openshift-cli-oc) (`oc`) configured for your cluster
+- Permission to create a project/namespace, Deployments, Services, Routes, and Secrets
+- A **successful run** of [`.github/workflows/ci.yml`](.github/workflows/ci.yml) on **`master`** so `backend` and `frontend` images exist on GHCR (pull requests only build; **push** to `master` runs `docker push`). The image path is `ghcr.io/<lowercase_github_owner>/<lowercase_repo_name>/backend` and `.../frontend`, tags `latest` and the commit SHA (see the workflow file).
+
+### 1. Project
+
+```bash
+oc new-project canine-demo
+```
+
+### 2. Deploy PostgreSQL for testing
+
+You need a PostgreSQL instance the API can reach on port **5432**, plus a database name, user, and password. Choose **one** of the following.
+
+**A. Developer perspective (web console)** — good for a first pass
+
+1. Switch to **Developer**, select your project, then **+Add** → **Database** (or **Catalog** → **Databases**).
+2. Choose **PostgreSQL** (ephemeral is fine for a throwaway demo; persistent if you want data to survive pod restarts).
+3. Set database name, user, and password; deploy and wait until the database workload is **Ready**.
+
+Note the **Service** name OpenShift creates (e.g. `postgresql` or a generated name). The hostname from any pod in the same namespace is `SERVICE_NAME` (short form) or `SERVICE_NAME.canine-demo.svc.cluster.local`.
+
+**B. CLI with a cluster template** — if templates exist in `openshift`
+
+```bash
+oc get templates -n openshift | grep -i postgres
+```
+
+If you see e.g. `postgresql-persistent` or `postgresql-ephemeral`, instantiate it with parameters for user, password, database, and service name (follow `oc process --parameters -n openshift <template-name>`). Wait until the database deployment is available.
+
+**C. CLI from the Red Hat PostgreSQL image** — when no template is available
+
+Adjust the image reference if your cluster mirrors Red Hat registries differently.
+
+```bash
+oc new-app --name=postgresql \
+  -e POSTGRESQL_USER=canine \
+  -e POSTGRESQL_PASSWORD='replace-with-a-strong-demo-password' \
+  -e POSTGRESQL_DATABASE=canine \
+  registry.redhat.io/rhel9/postgresql-16:latest
+oc rollout status deployment/postgresql --timeout=180s
+```
+
+### 3. Verify the database instance
+
+Confirm the pod is running and the Service exists:
+
+```bash
+oc get pods -l app=postgresql
+oc get svc postgresql
+```
+
+If your labels differ, use `oc get pods` and `oc get svc` and identify the PostgreSQL workload. Optional: from a debug pod in the same namespace, test TCP connectivity to `postgresql:5432`.
+
+### 4. Application images on GHCR
+
+Use the images your pipeline publishes (after merging to `master`), for example:
+
+- `ghcr.io/michaelkotelnikov/canine-adoption-platform/backend:latest`
+- `ghcr.io/michaelkotelnikov/canine-adoption-platform/frontend:latest`
+
+### 5. Create the application Secret
+
+The backend manifest expects a Secret named `canine-secrets` with keys `database-url`, `jwt-secret`, and optionally `mistral-api-key` (see [`infrastructure/openshift/backend-deployment.yaml`](infrastructure/openshift/backend-deployment.yaml)).
+
+Build **`DATABASE_URL`** in the same form as [`.env.example`](.env.example): async SQLAlchemy URL with the **asyncpg** driver. Use the **Kubernetes DNS name** of the database Service so traffic stays inside the cluster (same namespace: service name only is enough).
+
+Example (password and service name must match what you deployed):
+
+```bash
+oc create secret generic canine-secrets \
+  --from-literal=database-url='postgresql+asyncpg://canine:replace-with-a-strong-demo-password@postgresql:5432/canine' \
+  --from-literal=jwt-secret='replace-with-a-long-random-string' \
+  --from-literal=mistral-api-key=''
+```
+
+If you omit AI features, you can leave `mistral-api-key` empty; the sample Deployment marks that key optional.
+
+### 6. Edit OpenShift manifests
+
+1. In [`infrastructure/openshift/backend-deployment.yaml`](infrastructure/openshift/backend-deployment.yaml), set the `image` to your GHCR backend image (see [Application images on GHCR](#4-application-images-on-ghcr)).
+2. Set **`CORS_ORIGINS`** to the **public HTTPS origin** of the frontend Route (you can update this after you create the frontend Route in the next steps).
+3. In [`infrastructure/openshift/frontend-deployment.yaml`](infrastructure/openshift/frontend-deployment.yaml), set the `image` to your GHCR frontend image.
+4. Set **`NEXT_PUBLIC_API_URL`** to the **public HTTPS base URL** of the API (browser-accessible), e.g. `https://canine-backend-canine-demo.apps.example.com` — no trailing slash.
+
+Optional: for Next.js server-side requests, add an env var **`API_URL`** pointing at the in-cluster Service (e.g. `http://canine-backend:8000`) so RSC traffic does not leave the cluster; if unset, the app falls back to `NEXT_PUBLIC_API_URL` (see [`frontend/src/lib/api/client.ts`](frontend/src/lib/api/client.ts)).
+
+### 7. Apply workloads and expose the API
+
+The repository sample includes a Route for the **frontend** only. Expose the **backend** Service so browsers and `NEXT_PUBLIC_API_URL` can reach it.
+
+```bash
+oc apply -f infrastructure/openshift/backend-deployment.yaml
+oc apply -f infrastructure/openshift/frontend-deployment.yaml
+oc expose svc canine-backend --port=8000
+```
+
+Discover hostnames:
+
+```bash
+oc get route canine-frontend -o jsonpath='{.spec.host}{"\n"}'
+oc get route canine-backend -o jsonpath='{.spec.host}{"\n"}'
+```
+
+If `CORS_ORIGINS` or `NEXT_PUBLIC_API_URL` were placeholders, edit the Deployments (or patch env) so **`CORS_ORIGINS`** matches `https://<frontend-route-host>` and **`NEXT_PUBLIC_API_URL`** matches `https://<backend-route-host>`, then wait for a rollout.
+
+### 8. Database migrations and seed data
+
+Run Alembic **after** the backend Deployment is up and the Secret points at a live PostgreSQL instance:
+
+```bash
+oc rollout status deployment/canine-backend --timeout=120s
+oc exec deploy/canine-backend -- alembic upgrade head
+```
+
+Optional demo data and default admin (same as local `make seed-db`; override with `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` if your image supports them):
+
+```bash
+oc exec deploy/canine-backend -- python -m app.seed
+```
+
+### 9. Smoke test
+
+- Open the frontend Route URL in a browser.
+- Check API health: `https://<backend-route-host>/health`
+- Open API docs: `https://<backend-route-host>/docs`
+- If you ran the seed step, sign in with the seeded admin credentials from [Default admin](#default-admin-after-make-seed-db) (change the password in anything beyond a lab).
+
+### 10. Cleanup (demo)
+
+```bash
+oc delete project canine-demo
+```
+
+Ephemeral databases lose data when deleted; persistent PVCs may need separate cleanup if you created them outside this walkthrough.

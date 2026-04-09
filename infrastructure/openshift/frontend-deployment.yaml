@@ -20,7 +20,8 @@ spec:
             - ALL
       containers:
         - name: web
-          image: image-registry.openshift-image-registry.svc:5000/your-project/canine-frontend:latest
+          # GHCR: published by .github/workflows/ci.yml on push to master (repository path must be lowercase).
+          image: ghcr.io/your-github-namespace/your-repo/frontend:latest
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
